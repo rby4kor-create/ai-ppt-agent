@@ -1,0 +1,285 @@
+{
+  "stories": [
+    {
+      "category": "frontier_ai",
+      "subcategory": "FRONTIER MODEL / REASONING / ENTERPRISE DEPLOYMENT",
+      "headline": "Anthropic ships extended-thinking mode for long-horizon enterprise reasoning tasks",
+      "what_changed": "The new mode lets the model allocate variable inference-time compute to a single query, trading latency for accuracy on multi-step analytical work.",
+      "metrics": [
+        [
+          "3x",
+          "longer reasoning chains"
+        ],
+        [
+          "41%",
+          "fewer factual errors"
+        ]
+      ],
+      "enterprise": "Enterprises running multi-step analysis (audit, diligence, legal review) gain a lever to trade cost for accuracy on a per-query basis.",
+      "bottom_line": "Pilot extended-thinking mode on your highest-stakes analytical workflow before extending it to routine queries where the added latency is not justified.",
+      "tags": [
+        "reasoning",
+        "long-context",
+        "inference-time compute"
+      ],
+      "source_name": "Anthropic",
+      "source_url": "https://www.anthropic.com/news",
+      "slot": "right",
+      "page": 1,
+      "number": "01",
+      "image": "/home/claude/work/build/assets/stock/frontier_ai/frontier_ai_01.png",
+      "image_score": 26.5,
+      "alt_images": [
+        "/home/claude/work/build/assets/stock/frontier_ai/frontier_ai_02.png",
+        "/home/claude/work/build/assets/stock/frontier_ai/frontier_ai_03.png"
+      ]
+    },
+    {
+      "category": "developer_ai",
+      "subcategory": "CODING AGENTS / TERMINAL TOOLING / DEVELOPER PRODUCTIVITY",
+      "headline": "GitHub brings autonomous coding agents directly into the terminal workflow",
+      "what_changed": "A new CLI-native agent mode runs multi-file edits, test loops, and PR creation without leaving the terminal, reusing the same review pipeline as human PRs.",
+      "metrics": [
+        [
+          "30%",
+          "faster PR turnaround"
+        ],
+        [
+          "2.1x",
+          "tickets closed per sprint"
+        ]
+      ],
+      "enterprise": "Coding-agent adoption is shifting from IDE plugins toward terminal-native, CI-integrated tooling that fits existing engineering workflows.",
+      "bottom_line": "Run a two-week pilot with one engineering team, gated behind the existing PR review process, before granting agents write access more broadly.",
+      "tags": [
+        "coding agents",
+        "CLI",
+        "CI/CD"
+      ],
+      "source_name": "GitHub",
+      "source_url": "https://github.blog",
+      "slot": "left",
+      "page": 2,
+      "number": "02",
+      "image": "/home/claude/work/build/assets/stock/developer_ai/developer_ai_01.png",
+      "image_score": 26.5,
+      "alt_images": [
+        "/home/claude/work/build/assets/stock/developer_ai/developer_ai_02.png",
+        "/home/claude/work/build/assets/stock/developer_ai/developer_ai_03.png"
+      ]
+    },
+    {
+      "category": "hardware",
+      "subcategory": "AI SILICON / INFERENCE ECONOMICS / DATA CENTER",
+      "headline": "NVIDIA's next inference chip cuts cost per token by a third at equal latency",
+      "what_changed": "The new accelerator targets inference rather than training workloads, with a memory-bandwidth profile tuned for long-context serving at scale.",
+      "metrics": [
+        [
+          "33%",
+          "lower cost per token"
+        ],
+        [
+          "2026",
+          "general availability"
+        ]
+      ],
+      "enterprise": "Inference economics, not training FLOPs, are becoming the dominant lever in production AI budgeting as usage scales past pilot volume.",
+      "bottom_line": "Model your current token spend against the new hardware's published benchmarks before renewing existing inference capacity commitments.",
+      "tags": [
+        "inference",
+        "silicon",
+        "unit economics"
+      ],
+      "source_name": "NVIDIA",
+      "source_url": "https://nvidianews.nvidia.com",
+      "slot": "right",
+      "page": 3,
+      "number": "03",
+      "image": "/home/claude/work/build/assets/stock/hardware/hardware_01.png",
+      "image_score": 26.5,
+      "alt_images": [
+        "/home/claude/work/build/assets/stock/hardware/hardware_02.png",
+        "/home/claude/work/build/assets/stock/hardware/hardware_03.png"
+      ]
+    },
+    {
+      "category": "robotics",
+      "subcategory": "INDUSTRIAL ROBOTICS / WAREHOUSE AUTOMATION",
+      "headline": "Warehouse robotics vendor reports first fully autonomous overnight shift at scale",
+      "what_changed": "A logistics operator ran an unattended overnight shift across three facilities using vision-language-action models for pick, pack, and exception handling.",
+      "metrics": [
+        [
+          "94%",
+          "exception auto-resolution"
+        ],
+        [
+          "3",
+          "facilities live"
+        ]
+      ],
+      "enterprise": "Autonomous operation outside staffed hours is becoming a realistic near-term target for warehouse and light-manufacturing operators.",
+      "bottom_line": "Identify one low-risk, low-value overnight process as a contained pilot before committing to unattended operation across a full shift.",
+      "tags": [
+        "warehouse automation",
+        "VLA models",
+        "logistics"
+      ],
+      "source_name": "The Robot Report",
+      "source_url": "https://www.therobotreport.com",
+      "slot": "left",
+      "page": 4,
+      "number": "04",
+      "image": "/home/claude/work/build/assets/stock/robotics/robotics_01.png",
+      "image_score": 26.5,
+      "alt_images": [
+        "/home/claude/work/build/assets/stock/robotics/robotics_02.png",
+        "/home/claude/work/build/assets/stock/robotics/robotics_03.png"
+      ]
+    },
+    {
+      "category": "healthcare",
+      "subcategory": "CLINICAL AI / DIAGNOSTICS / REGULATORY",
+      "headline": "FDA clears first AI triage tool for autonomous radiology pre-screening",
+      "what_changed": "The clearance covers autonomous flagging of urgent findings without mandatory concurrent physician review, a first for this diagnostic category.",
+      "metrics": [
+        [
+          "510(k)",
+          "clearance pathway"
+        ],
+        [
+          "12",
+          "participating health systems"
+        ]
+      ],
+      "enterprise": "Regulatory posture toward autonomous (not just assistive) clinical AI is shifting, with implications for liability and staffing models.",
+      "bottom_line": "Engage compliance and clinical leadership now to define escalation paths before any autonomous-triage pilot enters a live care setting.",
+      "tags": [
+        "clinical AI",
+        "regulatory",
+        "radiology"
+      ],
+      "source_name": "FDA",
+      "source_url": "https://www.fda.gov/news-events",
+      "slot": "right",
+      "page": 5,
+      "number": "05",
+      "image": "/home/claude/work/build/assets/stock/healthcare/healthcare_01.png",
+      "image_score": 26.5,
+      "alt_images": [
+        "/home/claude/work/build/assets/stock/healthcare/healthcare_02.png",
+        "/home/claude/work/build/assets/stock/healthcare/healthcare_03.png"
+      ]
+    },
+    {
+      "category": "cybersecurity",
+      "subcategory": "AI SECURITY / SOC AUTOMATION / THREAT DETECTION",
+      "headline": "Security operations centers report first AI-led incident containment at scale",
+      "what_changed": "An SOC automation platform independently contained a live intrusion end-to-end, with human analysts reviewing after the fact rather than in the loop.",
+      "metrics": [
+        [
+          "11 min",
+          "median containment time"
+        ],
+        [
+          "0",
+          "missed escalations in trial"
+        ]
+      ],
+      "enterprise": "Autonomous containment (not just detection) is now operationally viable, raising new questions about audit trails and analyst oversight design.",
+      "bottom_line": "Require a full audit-log review process before extending autonomous containment beyond the lowest-severity incident classes.",
+      "tags": [
+        "SOC automation",
+        "incident response",
+        "AI security"
+      ],
+      "source_name": "Dark Reading",
+      "source_url": "https://www.darkreading.com",
+      "slot": "left",
+      "page": 6,
+      "number": "06",
+      "image": "/home/claude/work/build/assets/stock/cybersecurity/cybersecurity_01.png",
+      "image_score": 26.5,
+      "alt_images": [
+        "/home/claude/work/build/assets/stock/cybersecurity/cybersecurity_02.png",
+        "/home/claude/work/build/assets/stock/cybersecurity/cybersecurity_03.png"
+      ]
+    }
+  ],
+  "dividers": [
+    {
+      "number": "01",
+      "title": "FRONTIER & AGENTIC AI",
+      "subtitle": "Foundation models, reasoning, and autonomous coding agents",
+      "category": "frontier_ai"
+    }
+  ],
+  "signals": [
+    {
+      "n": "01",
+      "headline": "Inference cost is overtaking training cost as the key AI budget line",
+      "detail": "Multiple vendors this week priced products around cost-per-token, not model size.",
+      "priority": "HIGH"
+    },
+    {
+      "n": "02",
+      "headline": "Autonomous operation is moving from pilots to unattended production shifts",
+      "detail": "Robotics and SOC automation both crossed from assisted to autonomous this week.",
+      "priority": "HIGH"
+    },
+    {
+      "n": "03",
+      "headline": "Regulators are beginning to certify autonomous, not just assistive, AI",
+      "detail": "FDA clearance sets a precedent that other regulated industries will watch closely.",
+      "priority": "MEDIUM"
+    },
+    {
+      "n": "04",
+      "headline": "Terminal-native tooling is the new interface for coding agents",
+      "detail": "CLI-first agent workflows are consolidating around existing CI/CD review gates.",
+      "priority": "MEDIUM"
+    },
+    {
+      "n": "05",
+      "headline": "Extended inference-time reasoning is now a configurable enterprise lever",
+      "detail": "Cost/accuracy tradeoffs can now be tuned per query rather than per model choice.",
+      "priority": "LOW"
+    }
+  ],
+  "leadership": [
+    {
+      "signal": "Inference economics now outweigh model choice in production AI cost",
+      "interpretation": "Vendors are competing on cost-per-token, not benchmark scores, once a model clears the quality bar.",
+      "action": "Re-benchmark production token spend quarterly, not just at initial model selection."
+    },
+    {
+      "signal": "Autonomous operation is crossing from pilot to unattended production",
+      "interpretation": "Robotics, SOC, and clinical AI each moved a step toward operating without a human in the loop this week.",
+      "action": "Define an internal autonomy-review gate before any team is authorized to remove human-in-the-loop review."
+    },
+    {
+      "signal": "Coding agents are consolidating around existing engineering workflows",
+      "interpretation": "Adoption is fastest where agents plug into CI/CD and PR review rather than requiring new tooling.",
+      "action": "Prioritize agent pilots that reuse existing review and deployment gates over standalone tools."
+    }
+  ],
+  "weekly_stats": [
+    [
+      "6",
+      "DEVELOPMENTS"
+    ],
+    [
+      "6",
+      "DOMAINS"
+    ],
+    [
+      "7.4",
+      "AVG. INNOVATION"
+    ],
+    [
+      "0",
+      "RISK FLAGS"
+    ]
+  ],
+  "cover_image": "/home/claude/work/build/assets/stock/_covers/cover_hero.png",
+  "divider_image": "/home/claude/work/build/assets/stock/_covers/divider_generative_ai.png"
+}

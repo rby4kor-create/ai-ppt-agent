@@ -1,0 +1,18 @@
+[server]
+# Serves files placed in ./static at the relative URL "app/static/...".
+# Used to self-host the Manrope / Inter font files instead of pulling them
+# from fonts.googleapis.com at runtime. Two reasons that CDN call was
+# failing (and why the type looked unstyled/invisible in the deployed app):
+#   1. Many EU/corporate networks -- Bosch included -- block or strip
+#      requests to Google's font CDN because loading fonts from Google's
+#      servers leaks the visitor's IP to Google without consent (this is
+#      the well-known German "Google Fonts" GDPR issue), so the @import
+#      simply never resolved on that network path.
+#   2. Even when it does resolve, an external @import is a render-blocking,
+#      best-effort network call -- on a slow or filtered connection the
+#      page paints with fallback fonts before/without it ever landing.
+# Self-hosting removes both failure modes: the fonts ship with the app.
+enableStaticServing = true
+
+[theme]
+base = "light"

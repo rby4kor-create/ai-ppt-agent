@@ -1,0 +1,183 @@
+{
+  "frontier_ai": {
+    "label": "Frontier AI / Foundation Models",
+    "target_count": 15,
+    "keywords": ["frontier model", "foundation model", "llm", "reasoning", "research lab", "neural network", "machine learning research"],
+    "preferred_queries": [
+      "artificial intelligence research laboratory",
+      "machine learning research workstation",
+      "neural network visualization abstract",
+      "research scientist computer screens",
+      "advanced computing research facility"
+    ],
+    "avoid": ["robot face", "glowing brain", "humanoid robot"]
+  },
+  "agentic_ai": {
+    "label": "Agentic AI / Automation",
+    "target_count": 14,
+    "keywords": ["agent", "autonomous", "workflow", "orchestration", "automation", "multi-step"],
+    "preferred_queries": [
+      "autonomous workflow automation technology",
+      "business process automation office",
+      "intelligent automation dashboard",
+      "digital workflow orchestration screen"
+    ],
+    "avoid": ["humanoid robot", "sci-fi robot"]
+  },
+  "developer_ai": {
+    "label": "Developer AI / Coding",
+    "target_count": 15,
+    "keywords": ["coding", "developer", "software engineering", "terminal", "ide", "programming"],
+    "preferred_queries": [
+      "professional software developer workstation",
+      "modern software development office",
+      "developer coding terminal screen",
+      "software engineer dual monitor code"
+    ],
+    "avoid": ["stock handshake", "generic business people"]
+  },
+  "enterprise_ai": {
+    "label": "Enterprise AI",
+    "target_count": 14,
+    "keywords": ["enterprise", "business software", "digital transformation", "productivity", "corporate innovation"],
+    "preferred_queries": [
+      "enterprise technology office modern",
+      "business intelligence dashboard screen",
+      "corporate digital transformation technology",
+      "executive technology meeting room"
+    ],
+    "avoid": ["cheesy handshake", "people pointing at charts"]
+  },
+  "infrastructure": {
+    "label": "AI Infrastructure / Data Centers",
+    "target_count": 15,
+    "keywords": ["data center", "server", "cloud infrastructure", "gpu cluster", "high performance computing"],
+    "preferred_queries": [
+      "modern data center server racks",
+      "high performance computing facility",
+      "cloud infrastructure server room",
+      "data center architecture corridor"
+    ],
+    "avoid": ["stock cloud icon graphic"]
+  },
+  "hardware": {
+    "label": "AI Hardware / Semiconductors",
+    "target_count": 14,
+    "keywords": ["semiconductor", "chip", "gpu", "microprocessor", "silicon wafer", "fabrication"],
+    "preferred_queries": [
+      "semiconductor chip macro photography",
+      "computer processor close up",
+      "silicon wafer fabrication",
+      "GPU circuit board macro"
+    ],
+    "avoid": ["cartoon chip icon"]
+  },
+  "robotics": {
+    "label": "Robotics / Physical AI",
+    "target_count": 15,
+    "keywords": ["industrial robot", "robotic arm", "warehouse automation", "autonomous machine", "manufacturing"],
+    "preferred_queries": [
+      "industrial robotic arm factory",
+      "warehouse robotics automation",
+      "autonomous robot manufacturing line",
+      "logistics robot warehouse"
+    ],
+    "avoid": ["humanoid robot render", "sci-fi robot face"]
+  },
+  "healthcare": {
+    "label": "Healthcare AI / Medical Technology",
+    "target_count": 14,
+    "keywords": ["medical technology", "wearable", "digital health", "diagnostics", "biosensor"],
+    "preferred_queries": [
+      "medical technology laboratory",
+      "wearable health technology device",
+      "digital health monitoring screen",
+      "medical research laboratory equipment"
+    ],
+    "avoid": ["generic stethoscope stock photo"]
+  },
+  "speech": {
+    "label": "Speech / Voice AI",
+    "target_count": 12,
+    "keywords": ["microphone", "speech recognition", "voice interface", "audio engineering"],
+    "preferred_queries": [
+      "professional studio microphone",
+      "audio engineering mixing console",
+      "podcast studio technology",
+      "voice interface sound waves"
+    ],
+    "avoid": []
+  },
+  "multimodal": {
+    "label": "Multimodal AI / Vision",
+    "target_count": 12,
+    "keywords": ["computer vision", "image recognition", "machine vision", "video analytics"],
+    "preferred_queries": [
+      "computer vision camera technology",
+      "machine vision laboratory",
+      "video analytics screen",
+      "AI camera lens technology"
+    ],
+    "avoid": []
+  },
+  "cybersecurity": {
+    "label": "Cybersecurity / AI Safety",
+    "target_count": 12,
+    "keywords": ["cybersecurity", "security operations", "network security", "encryption"],
+    "preferred_queries": [
+      "cybersecurity operations center",
+      "network security monitoring screens",
+      "secure data infrastructure",
+      "digital encryption technology"
+    ],
+    "avoid": ["hooded hacker"]
+  },
+  "enterprise_data": {
+    "label": "Enterprise Data / Analytics",
+    "target_count": 12,
+    "keywords": ["data analytics", "business intelligence", "data visualization", "database"],
+    "preferred_queries": [
+      "data analytics dashboard screen",
+      "business intelligence visualization",
+      "database infrastructure technology",
+      "enterprise data center analytics"
+    ],
+    "avoid": []
+  },
+  "creative_ai": {
+    "label": "Creative AI / Generative Media",
+    "target_count": 12,
+    "keywords": ["creative studio", "video production", "digital art", "design technology"],
+    "preferred_queries": [
+      "creative technology studio production",
+      "digital media production studio",
+      "design technology workstation",
+      "video production control room"
+    ],
+    "avoid": []
+  },
+  "economics": {
+    "label": "AI Economics / Funding / Business",
+    "target_count": 12,
+    "keywords": ["technology investment", "venture capital", "financial technology", "startup"],
+    "preferred_queries": [
+      "technology investment office skyline",
+      "financial technology trading screens",
+      "venture capital office meeting",
+      "modern business district technology"
+    ],
+    "avoid": ["pile of money", "coins"]
+  },
+  "governance": {
+    "label": "AI Governance / Web / Digital Policy",
+    "target_count": 11,
+    "keywords": ["digital governance", "regulation", "privacy technology", "internet infrastructure"],
+    "preferred_queries": [
+      "digital governance technology policy",
+      "internet infrastructure network",
+      "privacy technology data protection",
+      "web infrastructure server network"
+    ],
+    "avoid": []
+  }
+}

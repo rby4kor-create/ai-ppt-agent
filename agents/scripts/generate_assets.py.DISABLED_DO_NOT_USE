@@ -1,0 +1,395 @@
+"""
+One-off generator for category illustration assets (assets/images/*.png).
+
+Abstract, premium technology visuals in a consistent dark/red style, one
+per category, used as static fallback artwork for topic-slide imagery
+when no real article image is available (there's no network access in
+this environment to source licensed stock photography). Real photography
+can be dropped into this same assets/images/ path later with no code
+changes - ImageAgent resolves by filename per category.
+
+Implementation note: every shape is drawn on a transparent overlay layer
+and composited with Image.alpha_composite - drawing translucent fills
+directly onto an already-opaque RGBA base does NOT alpha-blend in PIL
+(it overwrites RGB and only sets the alpha channel, which then gets
+discarded as solid color on the final RGB flatten).
+"""
+import math
+import os
+import random
+from PIL import Image, ImageDraw, ImageFilter
+
+W, H = 1600, 1200
+OUT_DIR = "/home/claude/repo/assets/images"
+
+
+def base_gradient(size, top=(46, 46, 50), bottom=(18, 18, 20)):
+    w, h = size
+    img = Image.new("RGB", (w, h), bottom)
+    px = img.load()
+    for y in range(h):
+        t = y / h
+        r = int(top[0] * (1 - t) + bottom[0] * t)
+        g = int(top[1] * (1 - t) + bottom[1] * t)
+        b = int(top[2] * (1 - t) + bottom[2] * t)
+        for x in range(0, w, 4):  # coarse fill + resize-free speed hack
+            px[x, y] = (r, g, b)
+    # fill the skipped columns
+    img = img.resize((w, h))
+    return img.convert("RGBA")
+
+
+def overlay(size):
+    return Image.new("RGBA", size, (0, 0, 0, 0))
+
+
+def composite_all(base, *overlays):
+    out = base
+    for ov in overlays:
+        out = Image.alpha_composite(out, ov)
+    return out
+
+
+def vignette(img):
+    size = img.size
+    vign = Image.new("L", size, 0)
+    vdraw = ImageDraw.Draw(vign)
+    vdraw.ellipse([-size[0] * 0.25, -size[1] * 0.25, size[0] * 1.25, size[1] * 1.25], fill=255)
+    vign = vign.filter(ImageFilter.GaussianBlur(size[0] * 0.15))
+    black = Image.new("RGBA", size, (0, 0, 0, 140))
+    darkened = Image.alpha_composite(img, black)
+    return Image.composite(img, darkened, vign)
+
+
+def grid_layer(size, spacing=80, alpha=14):
+    ov = overlay(size)
+    draw = ImageDraw.Draw(ov, "RGBA")
+    w, h = size
+    color = (255, 255, 255, alpha)
+    for x in range(0, w, spacing):
+        draw.line([(x, 0), (x, h)], fill=color, width=1)
+    for y in range(0, h, spacing):
+        draw.line([(0, y), (w, y)], fill=color, width=1)
+    return ov
+
+
+def bloom_layer(size, dots, blur_radius=30):
+    """dots: list of (cx, cy, r, (r,g,b,a)) - returns a blurred halo layer."""
+    ov = overlay(size)
+    draw = ImageDraw.Draw(ov, "RGBA")
+    for cx, cy, r, color in dots:
+        br = r * 3.0
+        halo_alpha = min(255, int(color[3] * 0.6))
+        draw.ellipse([cx - br, cy - br, cx + br, cy + br],
+                     fill=(color[0], color[1], color[2], halo_alpha))
+    return ov.filter(ImageFilter.GaussianBlur(blur_radius))
+
+
+def core_layer(size, dots):
+    ov = overlay(size)
+    draw = ImageDraw.Draw(ov, "RGBA")
+    for cx, cy, r, color in dots:
+        draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill=color)
+    return ov
+
+
+def save(img, name):
+    img.convert("RGB").save(f"{OUT_DIR}/{name}.png", quality=92)
+    print(f"wrote {name}.png")
+
+
+RED = (226, 0, 21, 235)
+RED_DIM = (226, 0, 21, 150)
+WHITE_DIM = (255, 255, 255, 140)
+WHITE_FAINT = (255, 255, 255, 26)
+
+
+def gen_hardware(name, seed, size=(W, H)):
+    random.seed(seed)
+    base = base_gradient(size)
+    grid = grid_layer(size, spacing=64, alpha=16)
+    cell_ov = overlay(size)
+    draw = ImageDraw.Draw(cell_ov, "RGBA")
+    dots = []
+    cols, rows = 7, 9
+    margin_x, margin_y = size[0] * 0.15, size[1] * 0.12
+    cell_w = (size[0] - 2 * margin_x) / cols
+    cell_h = (size[1] - 2 * margin_y) / rows
+    for c in range(cols):
+        for r in range(rows):
+            if random.random() < 0.5:
+                x0 = margin_x + c * cell_w + 6
+                y0 = margin_y + r * cell_h + 6
+                x1 = x0 + cell_w - 12
+                y1 = y0 + cell_h - 12
+                lit = random.random() < 0.18
+                fill = RED_DIM if lit else WHITE_FAINT
+                draw.rectangle([x0, y0, x1, y1], fill=fill)
+                if lit:
+                    dots.append(((x0 + x1) / 2, (y0 + y1) / 2, (x1 - x0) / 2, RED))
+    bloom = bloom_layer(size, dots, blur_radius=22)
+    img = composite_all(base, grid, cell_ov, bloom)
+    save(vignette(img), name)
+
+
+def gen_agents(name, seed, size=(W, H)):
+    random.seed(seed)
+    base = base_gradient(size)
+    cx, cy = size[0] / 2, size[1] / 2
+    nodes = []
+    for i in range(9):
+        ang = (i / 9) * 2 * math.pi
+        rad = min(size) * 0.24 + random.randint(-30, 50)
+        x = cx + rad * math.cos(ang)
+        y = cy + rad * math.sin(ang) * 0.8
+        nodes.append((x, y, i))
+    line_ov = overlay(size)
+    ldraw = ImageDraw.Draw(line_ov, "RGBA")
+    for x, y, i in nodes:
+        ldraw.line([(cx, cy), (x, y)], fill=(255, 255, 255, 45), width=2)
+    dots = [(cx, cy, 32, RED)]
+    for x, y, i in nodes:
+        if i % 3 == 0:
+            dots.append((x, y, 15, RED))
+        else:
+            dots.append((x, y, 9, WHITE_DIM))
+    bloom = bloom_layer(size, dots, blur_radius=26)
+    core = core_layer(size, dots)
+    img = composite_all(base, line_ov, bloom, core)
+    save(vignette(img), name)
+
+
+def gen_cloud(name, seed, size=(W, H)):
+    random.seed(seed)
+    base = base_gradient(size)
+    ov = overlay(size)
+    draw = ImageDraw.Draw(ov, "RGBA")
+    cx, cy = size[0] / 2, size[1] / 2
+    for i in range(5):
+        r = size[0] * 0.16 - i * (size[0] * 0.018)
+        ccx = cx + (i - 2) * (size[0] * 0.055)
+        ccy = cy - size[1] * 0.03 + (i % 2) * (size[1] * 0.025)
+        alpha = 20 + i * 8
+        draw.ellipse([ccx - r, ccy - r * 0.6, ccx + r, ccy + r * 0.6],
+                     outline=(255, 255, 255, alpha), width=3)
+    dots = [(cx, cy, size[0] * 0.045, RED)]
+    bloom = bloom_layer(size, dots, blur_radius=30)
+    core = core_layer(size, dots)
+    img = composite_all(base, ov, bloom, core)
+    save(vignette(img), name)
+
+
+def gen_robotics(name, seed, size=(W, H)):
+    random.seed(seed)
+    base = base_gradient(size)
+    bx, by = size[0] * 0.32, size[1] * 0.85
+    p1 = (bx + size[0] * 0.04, by - size[1] * 0.25)
+    p2 = (p1[0] + size[0] * 0.16, p1[1] - size[1] * 0.13)
+    p3 = (p2[0] + size[0] * 0.14, p2[1] + size[1] * 0.03)
+    pts = [(bx, by), p1, p2, p3]
+    line_ov = overlay(size)
+    ldraw = ImageDraw.Draw(line_ov, "RGBA")
+    for a, b in zip(pts, pts[1:]):
+        ldraw.line([a, b], fill=(255, 255, 255, 110), width=12)
+    dots = [(bx, by, 22, WHITE_DIM), (p1[0], p1[1], 16, RED),
+            (p2[0], p2[1], 16, RED), (p3[0], p3[1], 20, WHITE_DIM)]
+    bloom = bloom_layer(size, dots, blur_radius=24)
+    core = core_layer(size, dots)
+    img = composite_all(base, line_ov, bloom, core)
+    save(vignette(img), name)
+
+
+def gen_security(name, seed, size=(W, H)):
+    random.seed(seed)
+    base = base_gradient(size)
+    ov = overlay(size)
+    draw = ImageDraw.Draw(ov, "RGBA")
+    hex_r = size[0] * 0.044
+    hx = hex_r * math.sqrt(3)
+    hy = hex_r * 1.5
+    total = []
+    row = 0
+    y = -hex_r
+    while y < size[1] + hex_r:
+        offset = (hx / 2) if row % 2 else 0
+        x = -hx + offset
+        while x < size[0] + hx:
+            total.append((x, y))
+            x += hx
+        y += hy
+        row += 1
+    random.shuffle(total)
+    highlighted = set(total[:5])
+    dots = []
+    for (x, y) in total:
+        pts = [(x + hex_r * math.cos(math.pi / 3 * i), y + hex_r * math.sin(math.pi / 3 * i)) for i in range(6)]
+        if (x, y) in highlighted:
+            draw.polygon(pts, outline=(226, 0, 21, 130), width=3)
+            dots.append((x, y, 6, RED_DIM))
+        else:
+            draw.polygon(pts, outline=(255, 255, 255, 18), width=2)
+    bloom = bloom_layer(size, dots, blur_radius=20)
+    img = composite_all(base, ov, bloom)
+    save(vignette(img), name)
+
+
+def gen_healthcare(name, seed, size=(W, H)):
+    base = base_gradient(size)
+    ov = overlay(size)
+    draw = ImageDraw.Draw(ov, "RGBA")
+    cx, cy = size[0] / 2, size[1] / 2
+    for r in [size[0] * 0.05, size[0] * 0.1, size[0] * 0.15, size[0] * 0.2]:
+        draw.ellipse([cx - r, cy - r, cx + r, cy + r], outline=(255, 255, 255, 26), width=2)
+    bar_w, bar_l = size[0] * 0.028, size[0] * 0.16
+    dots = [(cx, cy, size[0] * 0.02, RED)]
+    bloom = bloom_layer(size, dots, blur_radius=30)
+    cross_ov = overlay(size)
+    cdraw = ImageDraw.Draw(cross_ov, "RGBA")
+    cdraw.rectangle([cx - bar_w / 2, cy - bar_l / 2, cx + bar_w / 2, cy + bar_l / 2], fill=RED)
+    cdraw.rectangle([cx - bar_l / 2, cy - bar_w / 2, cx + bar_l / 2, cy + bar_w / 2], fill=RED)
+    img = composite_all(base, ov, bloom, cross_ov)
+    save(vignette(img), name)
+
+
+def gen_vision(name, seed, size=(W, H)):
+    base = base_gradient(size)
+    ov = overlay(size)
+    draw = ImageDraw.Draw(ov, "RGBA")
+    cx, cy = size[0] / 2, size[1] / 2
+    box = size[0] * 0.26
+    corner = size[0] * 0.044
+    for sx, sy in [(-1, -1), (1, -1), (-1, 1), (1, 1)]:
+        x0 = cx + sx * box / 2
+        y0 = cy + sy * box / 2
+        draw.line([(x0, y0), (x0 - sx * corner, y0)], fill=(255, 255, 255, 190), width=7)
+        draw.line([(x0, y0), (x0, y0 - sy * corner)], fill=(255, 255, 255, 190), width=7)
+    for r in [size[0] * 0.044, size[0] * 0.088]:
+        draw.ellipse([cx - r, cy - r, cx + r, cy + r], outline=(226, 0, 21, 90), width=2)
+    dots = [(cx, cy, size[0] * 0.016, RED)]
+    bloom = bloom_layer(size, dots, blur_radius=22)
+    core = core_layer(size, dots)
+    img = composite_all(base, ov, bloom, core)
+    save(vignette(img), name)
+
+
+def gen_speech(name, seed, size=(W, H)):
+    random.seed(seed)
+    base = base_gradient(size)
+    ov = overlay(size)
+    draw = ImageDraw.Draw(ov, "RGBA")
+    n = 36
+    bar_w = size[0] / (n * 1.7)
+    gap = bar_w * 0.65
+    cy = size[1] / 2
+    x = (size[0] - n * (bar_w + gap)) / 2
+    dots = []
+    for i in range(n):
+        amp = (abs(math.sin(i * 0.35)) * 0.55 + random.random() * 0.35) * size[1] * 0.28
+        accent = i % 6 == 0
+        color = RED_DIM if accent else WHITE_FAINT
+        draw.rectangle([x, cy - amp / 2, x + bar_w, cy + amp / 2], fill=(color[0], color[1], color[2], color[3] + 60))
+        if accent:
+            dots.append((x + bar_w / 2, cy, bar_w, RED))
+        x += bar_w + gap
+    bloom = bloom_layer(size, dots, blur_radius=18)
+    img = composite_all(base, ov, bloom)
+    save(vignette(img), name)
+
+
+def gen_developer(name, seed, size=(W, H)):
+    base = base_gradient(size)
+    ov = overlay(size)
+    draw = ImageDraw.Draw(ov, "RGBA")
+    cx, cy = size[0] / 2, size[1] / 2
+    dx, dy = size[0] * 0.16, size[1] * 0.13
+    draw.line([(cx - dx, cy - dy), (cx - dx * 1.3, cy), (cx - dx, cy + dy)],
+              fill=(255, 255, 255, 190), width=12, joint="curve")
+    draw.line([(cx + dx, cy - dy), (cx + dx * 1.3, cy), (cx + dx, cy + dy)],
+              fill=(255, 255, 255, 190), width=12, joint="curve")
+    dots = [(cx + size[0] * 0.02, cy, size[0] * 0.01, RED)]
+    slash_ov = overlay(size)
+    sdraw = ImageDraw.Draw(slash_ov, "RGBA")
+    sdraw.line([(cx + dx * 0.4, cy - dy * 1.3), (cx - dx * 0.4, cy + dy * 1.3)], fill=RED, width=13)
+    bloom = bloom_layer(size, [(cx, cy, size[0] * 0.05, RED_DIM)], blur_radius=40)
+    img = composite_all(base, ov, bloom, slash_ov)
+    save(vignette(img), name)
+
+
+def gen_generative(name, seed, size=(W, H)):
+    random.seed(seed)
+    base = base_gradient(size)
+    cx, cy = size[0] / 2, size[1] / 2
+    dots = []
+    for i in range(160):
+        ang = random.random() * 2 * math.pi
+        rad = (random.random() ** 0.5) * size[0] * 0.24
+        x = cx + rad * math.cos(ang)
+        y = cy + rad * math.sin(ang) * 0.85
+        r = random.uniform(2, 6)
+        near_center = rad < size[0] * 0.09
+        if near_center and random.random() < 0.55:
+            color = (226, 0, 21, random.randint(140, 230))
+        else:
+            color = (255, 255, 255, random.randint(30, 100))
+        dots.append((x, y, r, color))
+    core = core_layer(size, dots)
+    bloom = bloom_layer(size, [(cx, cy, size[0] * 0.03, RED_DIM)], blur_radius=50)
+    img = composite_all(base, bloom, core)
+    save(vignette(img), name)
+
+
+def gen_general(name, seed, size=(W, H)):
+    base = base_gradient(size)
+    ov = overlay(size)
+    draw = ImageDraw.Draw(ov, "RGBA")
+    cx, cy = size[0] / 2, size[1] / 2
+    for r in [size[0] * 0.056, size[0] * 0.11, size[0] * 0.17]:
+        draw.ellipse([cx - r, cy - r * 0.55, cx + r, cy + r * 0.55], outline=(255, 255, 255, 34), width=2)
+    dots = [(cx, cy, size[0] * 0.021, RED)]
+    bloom = bloom_layer(size, dots, blur_radius=28)
+    core = core_layer(size, dots)
+    img = composite_all(base, ov, bloom, core)
+    save(vignette(img), name)
+
+
+def gen_cover(name, seed, size=(1400, 1600)):
+    random.seed(seed)
+    base = base_gradient(size)
+    grid = grid_layer(size, spacing=size[0] // 13, alpha=8)
+    cx, cy = size[0] * 0.55, size[1] * 0.42
+    line_ov = overlay(size)
+    ldraw = ImageDraw.Draw(line_ov, "RGBA")
+    dots = [(cx, cy, size[0] * 0.028, RED)]
+    for i in range(14):
+        ang = (i / 14) * 2 * math.pi
+        rad = size[0] * 0.19 + (i % 3) * (size[0] * 0.065)
+        x = cx + rad * math.cos(ang)
+        y = cy + rad * math.sin(ang)
+        ldraw.line([(cx, cy), (x, y)], fill=(255, 255, 255, 26), width=1)
+        if i % 4 == 0:
+            dots.append((x, y, size[0] * 0.01, RED))
+        else:
+            dots.append((x, y, size[0] * 0.005, WHITE_DIM))
+    bloom = bloom_layer(size, dots, blur_radius=34)
+    core = core_layer(size, dots)
+    img = composite_all(base, grid, line_ov, bloom, core)
+    save(vignette(img), name)
+
+
+if __name__ == "__main__":
+    os.makedirs(OUT_DIR, exist_ok=True)
+    gen_hardware("ai_hardware", 1)
+    gen_hardware("ai_infrastructure", 13)
+    gen_agents("ai_agents", 2)
+    gen_cloud("cloud_ai", 3)
+    gen_robotics("robotics", 4)
+    gen_security("cybersecurity", 5)
+    gen_healthcare("healthcare_ai", 6)
+    gen_vision("computer_vision", 7)
+    gen_speech("speech_ai", 8)
+    gen_developer("developer_ai", 9)
+    gen_generative("generative_ai", 10)
+    gen_generative("large_language_models", 11)
+    gen_general("general_ai", 12)
+    gen_cover("cover_hero", 99)
+    print("All assets generated.")
